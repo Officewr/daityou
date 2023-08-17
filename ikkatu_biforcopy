@@ -1,29 +1,29 @@
-Sub ファイルを移動して保存()
-    Dim 基準パス As String
-    Dim 日付フォルダ As String
-    Dim 移動先パス As String
-    Dim ファイル名 As String
-
-    ' 基準となるパスを設定（元のディレクトリ）
-    基準パス = ThisWorkbook.Path
-
-    ' 日付フォルダの名前を生成（mmddの形式）
-    日付フォルダ = Format(Date, "mmdd")
-
-    ' 移動先パスを生成（D:\mmdd）
-    移動先パス = "D:\" & 日付フォルダ
-
-    ' ファイル名を取得
-    ファイル名 = ThisWorkbook.Name
-
-    ' 移動先フォルダが存在しない場合は作成
-    If Dir(移動先パス, vbDirectory) = "" Then
-        MkDir 移動先パス
+Sub CopyToBackupFolder()
+    Dim originalFilePath As String
+    Dim backupFolderPath As String
+    Dim backupFolderName As String
+    
+    ' 現在編集中のファイルパスを取得
+    originalFilePath = ThisWorkbook.FullName
+    
+    ' バックアップフォルダの基本パス（Dドライブ）を設定
+    backupFolderPath = "D:\"
+    
+    ' 今日の日付からフォルダ名を作成（MMDD形式）
+    backupFolderName = Format(Date, "MMDD")
+    
+    ' バックアップ用フォルダのパスを作成
+    backupFolderPath = backupFolderPath & backupFolderName & "\"
+    
+    ' バックアップフォルダが存在しない場合は作成
+    If Dir(backupFolderPath, vbDirectory) = "" Then
+        MkDir backupFolderPath
     End If
-
-    ' ファイルを移動して上書き保存
-    On Error Resume Next
-    Name 基準パス & "\" & ファイル名 As 移動先パス & "\" & ファイル名
-    On Error GoTo 0
-
+    
+    ' ファイルをバックアップフォルダにコピー（上書き）
+    FileCopy originalFilePath, backupFolderPath & ThisWorkbook.Name
+    
+    ' 完了メッセージを表示
+    MsgBox "ファイルがバックアップされました。", vbInformation
 End Sub
+
